@@ -10,14 +10,6 @@ public class Turret{
         public static final double minTurnAngle = Units.degreestoRadians(-180.0);
         public static final double maxTurnAngle = Units.degreestoRadians(180.0);
         public static final boolean motorInverted = true;
-
-        public static final double kP = 30;
-        public static final double kD = 10;
-
-        public static final double kS = 0.1;
-        public static final double kG = 1;
-        public static final double kV = 10;
-        public static final double kA = 1; 
         
     }
 
