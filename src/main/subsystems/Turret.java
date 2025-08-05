@@ -9,16 +9,36 @@ public class Turret{
     public static class Constants{
         public static final double minTurnAngle = Units.degreestoRadians(-180.0);
         public static final double maxTurnAngle = Units.degreestoRadians(180.0);
+        public static final double startAngle = Units.degreestoRadians(90.0);
         public static final boolean motorInverted = true;
-        
+
+        public static final double statorCurrentLimit = 5.0;
+        public static final double supplyCurrentLimit = 5.0;
+        public static final double supplyCurrentLowerLimit = 5.0;
+        public static final double supplyCurrentLowerTime = 5.0;
     }
 
     public Turret(){
         TalonFXConfiguration turretMotor = new TalonFXConfiguration();
+
         turretMotor.MotorOutputConfigs.Inverted = Constants.motorInverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+
+        motorConfig.CurrentLimits.StatorCurrentLimit = Constants.statorCurrentLimit;
+
+        motorConfig.CurrentLimits.SupplyCurrentLimit = Constants.supplyCurrentLimit;
+        motorConfig.CurrentLimits.SupplyCurrentLowerLimit = Constants.supplyCurrentLowerLimit;
+        motorConfig.CurrentLimits.SupplyCurrentLowerTime = Constants.supplyCurrentLowerTime;
+
         
         CANcoderConfiguration turretEncoder = new CANcoderConfiguration();
-        
+
+        encoderConfig.MagnetSensor.SensorDirection = Constants.encoderInverted ? SensorDirectionValue.Clockwise_Positive: SensorDirectionValue.CounterClockwise_Positive;
     }
+
+    //public void setSpeed(double speed){
+        //motor.setSpeed(speed);
+    //}
+
+    //public void setPose(double angle){}
     
 }
