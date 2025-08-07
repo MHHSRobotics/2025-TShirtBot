@@ -1,9 +1,13 @@
 package frc.robot.subsystems;
+
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import static edu.wpi.first.units.Units.Radians;
+
 public class Turret{
 
     public static class Constants{
@@ -19,9 +23,10 @@ public class Turret{
     }
 
     public Turret(){
-        TalonFXConfiguration turretMotor = new TalonFXConfiguration();
+        TalonFX turretMotor;
+        TalonFXConfiguration motorConfig = new TalonFXConfiguration();
 
-        turretMotor.MotorOutputConfigs.Inverted = Constants.motorInverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
+        motorConfig.MotorOutputConfigs.Inverted = Constants.motorInverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
 
         motorConfig.CurrentLimits.StatorCurrentLimit = Constants.statorCurrentLimit;
 
@@ -35,10 +40,21 @@ public class Turret{
         encoderConfig.MagnetSensor.SensorDirection = Constants.encoderInverted ? SensorDirectionValue.Clockwise_Positive: SensorDirectionValue.CounterClockwise_Positive;
     }
 
-    //public void setSpeed(double speed){
-        //motor.setSpeed(speed);
-    //}
+    public void setSpeed(double speed){
+        turretMotor.set(speed);
+    }
 
-    //public void setPose(double angle){}
+    public void stop(double speed){
+        turretMotor.set(0.0);
+    }
+
+    public void setPose(Angle angle){
+        turretMotor.setPosition(angle);
+    }
+
+    @Override
+    public void applyConfig(TalonFXConfiguration config) {
+        turretMotor.getConfigurator().apply(config);
+    }
     
 }
