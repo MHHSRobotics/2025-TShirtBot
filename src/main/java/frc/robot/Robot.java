@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import frc.robot.Commands.PitchAdjusterCommands;
+import frc.robot.Subsystems.PitchAdjuster;
 
 /**
  * This is a demo program showing the use of the DifferentialDrive class, specifically it contains
@@ -27,6 +29,9 @@ public class Robot extends TimedRobot {
   private final Spark leftMotor2 = new Spark(1);
   private final Spark rightMotor1 = new Spark(2);
   private final Spark rightMotor2 = new Spark(3);
+
+  private final PitchAdjuster pitchAdjuster = new PitchAdjuster();
+  private final PitchAdjusterCommands pitchAdjusterCommands = new PitchAdjusterCommands(pitchAdjuster);
 
   /** Called once at the beginning of the robot program. */
   public Robot() {
@@ -48,8 +53,15 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     robotDrive.arcadeDrive(-controller.getLeftY(), -controller.getLeftX());
+    if (controller.getCircleButton()) {
+      pitchAdjusterCommands.setPitch(PitchAdjuster.Constants.angle1);
+    if (controller.getCrossButton()) {
+      pitchAdjusterCommands.setPitch(PitchAdjuster.Constants.angle2);
   }
 }
+}
+}
+
 /*        .                                       . .        .                                        
         .                               .          .                                                
              .           .       .                .               .   %*.   .    .           @#@    
