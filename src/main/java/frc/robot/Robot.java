@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import frc.robot.Commands.PitchAdjusterCattands;
-import frc.robot.Subsystems.PitchCatjuster;
+import frc.robot.Commands.PitchAdjusterCommands;
+import frc.robot.Subsystems.PitchAdjuster;
 
 /**
  * This is a demo program showing the use of the DifferentialDrive class, specifically it contains
@@ -30,8 +30,8 @@ public class Robot extends TimedRobot {
   private final Spark rightMotor1 = new Spark(2);
   private final Spark rightMotor2 = new Spark(3);
 
-  private final PitchCatjuster pitchAdjuster = new PitchCatjuster();
-  private final PitchAdjusterCattands pitchAdjusterCommands = new PitchAdjusterCattands(pitchAdjuster);
+  private final PitchAdjuster pitchAdjuster = new PitchAdjuster();
+  private final PitchAdjusterCommands pitchAdjusterCommands = new PitchAdjusterCommands(pitchAdjuster);
 
   /** Called once at the beginning of the robot program. */
   public Robot() {
@@ -54,9 +54,9 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     robotDrive.arcadeDrive(-controller.getLeftY(), -controller.getLeftX());
     if (controller.getCircleButton()) {
-      pitchAdjusterCommands.setPitch(PitchCatjuster.Constants.angle1);
+      pitchAdjusterCommands.setPitch(PitchAdjuster.Constants.angle1);
     if (controller.getCrossButton()) {
-      pitchAdjusterCommands.setPitch(PitchCatjuster.Constants.angle2);
+      pitchAdjusterCommands.setPitch(PitchAdjuster.Constants.angle2);
   }
 }
 }

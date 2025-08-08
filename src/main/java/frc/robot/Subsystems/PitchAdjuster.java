@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 
-public class PitchCatjuster extends SubsystemBase{
+public class PitchAdjuster extends SubsystemBase{
     public static class Constants{
         //Motor ID
         private static final int id = 1;
@@ -54,7 +54,7 @@ public class PitchCatjuster extends SubsystemBase{
     private CANcoder encoder;
     private PositionVoltage controller = new PositionVoltage(0);
 
-    public PitchCatjuster(){
+    public PitchAdjuster(){
         cat = new TalonFX(Constants.id);
         encoder = new CANcoder(Constants.encoderId);
 
@@ -100,7 +100,7 @@ public class PitchCatjuster extends SubsystemBase{
 
     public void setPitch(double angle){
         // Clamp the angle to the min and max values
-        angle = MathUtil.clamp(angle, PitchCatjuster.Constants.min, PitchCatjuster.Constants.max);
+        angle = MathUtil.clamp(angle, PitchAdjuster.Constants.min, PitchAdjuster.Constants.max);
     
         setPosition(angle);
     }

@@ -1,12 +1,12 @@
 package frc.robot.Commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.Subsystems.PitchCatjuster;
+import frc.robot.Subsystems.PitchAdjuster;
 
 public class PitchAdjusterCommands {
-    PitchCatjuster pitchCatjuste =  new PitchCatjuster();
+    PitchAdjuster pitchCatjuste =  new PitchAdjuster();
 
-    public PitchAdjusterCommands(PitchCatjuster pitchCatjuste){
+    public PitchAdjusterCommands(PitchAdjuster pitchCatjuste){
         this.pitchCatjuste = pitchCatjuste;
     }
     public InstantCommand setPitch(double angle){ //degree
