@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -24,8 +25,8 @@ public class PitchCatjuster extends SubsystemBase{
         private static final int encoderId = 0;
         
         //Motor constants
-        private static final double max = 85;
-        private static final double min = 0;
+        private static final double max = 85; //degree
+        private static final double min = 0; //degree
 
         //PID constants
         private static final double kP = 0.1;
@@ -43,6 +44,9 @@ public class PitchCatjuster extends SubsystemBase{
         private static final double SensorToMechanismRatio = 1.0; // Adjust as needed
 
         private static final double encoderOffset = 0.0; // Encoder offset, adjust as needed
+
+        public static final double angle1 = 53;// degree
+        public static final double angle2 = 71; // degree
     }
     //Kraken Motor Controller
     private TalonFX cat;
@@ -76,7 +80,7 @@ public class PitchCatjuster extends SubsystemBase{
         }
 
     public void setPosition(double angle){
-        cat.setControl(controller.withPosition(angle));
+        cat.setControl(controller.withPosition(Units.degreesToRotations(angle)));
     }
 
     public void stop(){
