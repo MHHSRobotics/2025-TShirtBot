@@ -1,17 +1,27 @@
-package frc.robot.Subsytems;
+package frc.robot.Subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import com.ctre.phoenix6.configs.Slot0Configs;
 
-public class PitchCatjuster {
+public class PitchCatjuster extends SubsystemBase{
     public static class Constants{
         //Motor ID
         private static final int id = 1;
+        private static final int encoderId = 0;
         
         //Motor constants
         private static final double max = 85;
@@ -28,13 +38,21 @@ public class PitchCatjuster {
         private static final double kV = 0.0;
         private static final double kA = 0.0;
         private static final boolean inverted = false;
+
+        private static final double RotorToSensorRatio = 1.0; // Adjust as needed
+        private static final double SensorToMechanismRatio = 1.0; // Adjust as needed
+
+        private static final double encoderOffset = 0.0; // Encoder offset, adjust as needed
     }
     //Kraken Motor Controller
-    private TalonFX Cat;
+    private TalonFX cat;
     private TalonFXConfiguration config;
+    private CANcoder encoder;
+    private PositionVoltage controller = new PositionVoltage(0);
 
     public PitchCatjuster(){
-        Cat = new TalonFX(Constants.id);
+        cat = new TalonFX(Constants.id);
+        encoder = new CANcoder(Constants.encoderId);
 
         config = new TalonFXConfiguration();
         config.MotorOutput.Inverted = Constants.inverted? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
@@ -47,36 +65,40 @@ public class PitchCatjuster {
         config.Slot0.kS = Constants.kS;
         config.Slot0.kV = Constants.kV;
         config.Slot0.GravityType = GravityTypeValue.Elevator_Static;
+
+        config.Feedback.RotorToSensorRatio = Constants.RotorToSensorRatio;
+        config.Feedback.SensorToMechanismRatio = Constants.SensorToMechanismRatio;
         
-        config.Feedback.FeedbackRemoteSensorID = 0;
+        config.Feedback.FeedbackRemoteSensorID = encoder.getDeviceID();
         config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
         
-        Cat.getConfigurator().apply(config);
+        cat.getConfigurator().apply(config);
         }
 
-    public void setMotor(double speed){
-        Cat.set(speed);
+    public void setPosition(double angle){
+        cat.setControl(controller.withPosition(angle));
     }
 
     public void stop(){
-        Cat.stopMotor();
+        cat.stopMotor();
     }
 
     public double getSpeed(){
-        return Cat.get();
+        return cat.get();
+    }
+
+    public double getAngle(){
+        // Assuming the encoder returns a value between 0 and 1 representing the position
+        double position = cat.getPosition().getValueAsDouble();
+        // Map this to the angle range
+        return position * (Constants.max - Constants.min) + Constants.min;
     }
 
     public void setPitch(double angle){
         // Clamp the angle to the min and max values
-        if(angle > PitchCatjuster.Constants.max){
-            angle = PitchCatjuster.Constants.max;
-        } else if(angle < PitchCatjuster.Constants.min){
-            angle = PitchCatjuster.Constants.min;
-        }
-        // Set the motor to the desired angle
-        // This is a placeholder, replace with actual control logic
-        double speed = (angle - getSpeed()) * 0.1; // Simple P control
-        setMotor(speed);
+        angle = MathUtil.clamp(angle, PitchCatjuster.Constants.min, PitchCatjuster.Constants.max);
+    
+        setPosition(angle);
     }
 
 

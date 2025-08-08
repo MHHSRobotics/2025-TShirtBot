@@ -1,11 +1,9 @@
 package frc.robot.Commands;
 
-import java.time.Instant;
-
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.Subsytems.PitchCatjuster;
+import frc.robot.Subsystems.PitchCatjuster;
 
-public class PitchAdjuster_Cattands {
+public class PitchAdjusterCattands {
     PitchCatjuster pitchCatjuste =  new PitchCatjuster();
 
     InstantCommand adjustPitch(double angle){
