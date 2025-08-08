@@ -21,7 +21,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 public class PitchAdjuster extends SubsystemBase{
     public static class Constants{
         //Motor ID
-        private static final int cat = 1;
+        private static final int id = 1;
         private static final int encoderId = 0;
         
         //Motor constants
@@ -55,7 +55,7 @@ public class PitchAdjuster extends SubsystemBase{
     private PositionVoltage controller = new PositionVoltage(0);
 
     public PitchAdjuster(){
-        motor = new TalonFX(Constants.cat);
+        motor = new TalonFX(Constants.id);
         encoder = new CANcoder(Constants.encoderId);
 
         config = new TalonFXConfiguration();
