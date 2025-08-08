@@ -21,7 +21,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 public class PitchAdjuster extends SubsystemBase{
     public static class Constants{
         //Motor ID
-        private static final int id = 1;
+        private static final int cat = 1;
         private static final int encoderId = 0;
         
         //Motor constants
@@ -49,13 +49,13 @@ public class PitchAdjuster extends SubsystemBase{
         public static final double angle2 = 71; // degree
     }
     //Kraken Motor Controller
-    private TalonFX cat;
+    private TalonFX motor;
     private TalonFXConfiguration config;
     private CANcoder encoder;
     private PositionVoltage controller = new PositionVoltage(0);
 
     public PitchAdjuster(){
-        cat = new TalonFX(Constants.id);
+        motor = new TalonFX(Constants.cat);
         encoder = new CANcoder(Constants.encoderId);
 
         config = new TalonFXConfiguration();
@@ -76,24 +76,24 @@ public class PitchAdjuster extends SubsystemBase{
         config.Feedback.FeedbackRemoteSensorID = encoder.getDeviceID();
         config.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
         
-        cat.getConfigurator().apply(config);
+        motor.getConfigurator().apply(config);
         }
 
     public void setPosition(double angle){
-        cat.setControl(controller.withPosition(Units.degreesToRotations(angle)));
+        motor.setControl(controller.withPosition(Units.degreesToRotations(angle)));
     }
 
     public void stop(){
-        cat.stopMotor();
+        motor.stopMotor();
     }
 
     public double getSpeed(){
-        return cat.get();
+        return motor.get();
     }
 
     public double getAngle(){
         // Assuming the encoder returns a value between 0 and 1 representing the position
-        double position = cat.getPosition().getValueAsDouble();
+        double position = motor.getPosition().getValueAsDouble();
         // Map this to the angle range
         return position * (Constants.max - Constants.min) + Constants.min;
     }

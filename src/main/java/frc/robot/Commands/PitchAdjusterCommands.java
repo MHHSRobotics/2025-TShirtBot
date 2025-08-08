@@ -4,17 +4,17 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Subsystems.PitchAdjuster;
 
 public class PitchAdjusterCommands {
-    PitchAdjuster pitchCatjuste =  new PitchAdjuster();
+    PitchAdjuster pitcat =  new PitchAdjuster();
 
-    public PitchAdjusterCommands(PitchAdjuster pitchCatjuste){
-        this.pitchCatjuste = pitchCatjuste;
+    public PitchAdjusterCommands(PitchAdjuster pitch){
+        this.pitcat = pitch;
     }
     public InstantCommand setPitch(double angle){ //degree
-        return new InstantCommand(()->pitchCatjuste.setPitch(angle));
+        return new InstantCommand(()->pitcat.setPitch(angle));
             // pitchCatjuster.setPosition(angle);
         };
     public InstantCommand stopPitch(){
-        return new InstantCommand(()->pitchCatjuste.stop());
+        return new InstantCommand(()->pitcat.stop());
     };
     
 
