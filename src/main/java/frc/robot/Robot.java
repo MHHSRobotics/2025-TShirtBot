@@ -12,7 +12,9 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import frc.robot.Commands.PitchAdjusterCommands;
+import frc.robot.Commands.PneumaticCommands;
 import frc.robot.Subsystems.PitchAdjuster;
+import frc.robot.Subsystems.Pneumatic;
 
 /**
  * This is a demo program showing the use of the DifferentialDrive class, specifically it contains
@@ -32,6 +34,8 @@ public class Robot extends TimedRobot {
 
   private final PitchAdjuster pitchAdjuster = new PitchAdjuster();
   private final PitchAdjusterCommands pitchAdjusterCommands = new PitchAdjusterCommands(pitchAdjuster);
+  private final Pneumatic cat = new Pneumatic();
+  private final PneumaticCommands PneumaticCommands = new PneumaticCommands(cat);
 
   /** Called once at the beginning of the robot program. */
   public Robot() {
@@ -57,6 +61,12 @@ public class Robot extends TimedRobot {
       pitchAdjusterCommands.setPitch(PitchAdjuster.Constants.angle1);
     if (controller.getCrossButton()) {
       pitchAdjusterCommands.setPitch(PitchAdjuster.Constants.angle2);
+  }
+    if (controller.getCreateButton()) {
+      PneumaticCommands.True();
+  }
+    if (controller.getOptionsButton()) {
+      PneumaticCommands.False();
   }
 }
 }
