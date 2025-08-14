@@ -42,6 +42,7 @@ public class RobotContainer {
 
     public void configureBindings() {
         drive.setDefaultCommand(driveCommands.drive(() -> -controller.getLeftY(), () -> -controller.getLeftX()));
+        pitchAdjuster.setDefaultCommand(pitchAdjusterCommands.setSpeed(() -> (controller.getRightY())));
     }
 
     public Command getAutonomousCommand() {
