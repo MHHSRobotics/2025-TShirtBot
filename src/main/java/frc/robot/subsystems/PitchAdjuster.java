@@ -18,12 +18,12 @@ public class PitchAdjuster extends SubsystemBase {
 
         private static final boolean inverted = false;
     }
-    // TalonFX motor controller for the Kraken x60
+    // SparkMax contoller for Neo
     private SparkMax motor;
     private SparkMaxConfig config;
 
     public PitchAdjuster() {
-        motor = new SparkMax(0, MotorType.kBrushless);
+        motor = new SparkMax(Constants.id, MotorType.kBrushless);
         config = new SparkMaxConfig();
         config.inverted(Constants.inverted);
         motor.configure(config, null, null);
