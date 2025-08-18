@@ -14,29 +14,36 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Turret;
 
 public class RobotContainer {
+    // The controller. CommandPS5Controller should always be used rather than PS5Controller, since the former can be
+    // bound to commands.
     private CommandPS5Controller controller = new CommandPS5Controller(0);
 
+    // The subsystem fields
     private Drive drive;
     private PitchAdjuster pitchAdjuster;
     private Shooter shooter;
     private Turret turret;
 
+    // The subsystem command fields
     private DriveCommands driveCommands;
     private PitchAdjusterCommands pitchAdjusterCommands;
     private ShooterCommands shooterCommands;
     private TurretCommands turretCommands;
 
     public RobotContainer() {
+        // Initialize the subsystems
         drive = new Drive();
         pitchAdjuster = new PitchAdjuster();
         shooter = new Shooter();
         turret = new Turret();
 
+        // Initialize the subsystem commands
         driveCommands = new DriveCommands(drive);
         pitchAdjusterCommands = new PitchAdjusterCommands(pitchAdjuster);
         shooterCommands = new ShooterCommands(shooter);
         turretCommands = new TurretCommands(turret);
 
+        // Bind controls to commands
         configureBindings();
     }
 
@@ -45,6 +52,7 @@ public class RobotContainer {
         pitchAdjuster.setDefaultCommand(pitchAdjusterCommands.setSpeed(() -> (controller.getRightY())));
     }
 
+    // Gets the next auto command. Since this is t-shirt bot it just returns a no-op.
     public Command getAutonomousCommand() {
         return new InstantCommand();
     }

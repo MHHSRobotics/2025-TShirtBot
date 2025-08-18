@@ -1,19 +1,12 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-/**
- * This is a demo program showing the use of the DifferentialDrive class, specifically it contains
- * the code necessary to operate a robot with tank drive.
- * blah blah blah
- */
+// Robot class initialized by Main. Extends TimedRobot to get access to methods which are called when state is changed.
 public class Robot extends TimedRobot {
+    // Current autonomous command
     private Command autonomousCommand;
 
     private final RobotContainer robotContainer;
@@ -22,20 +15,15 @@ public class Robot extends TimedRobot {
         robotContainer = new RobotContainer();
     }
 
+    // robotPeriodic() runs every robot tick. This code just runs the CommandScheduler, which manages all commands.
+    // CommandScheduler.run() gets the next command and runs it.
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
     }
 
-    @Override
-    public void disabledInit() {}
-
-    @Override
-    public void disabledPeriodic() {}
-
-    @Override
-    public void disabledExit() {}
-
+    // autonomousInit() is called when autonomous begins. This gets the auto command from RobotContainer and schedules
+    // it. There's no auto for t-shirt bot, but I decided to keep this since it's a good example.
     @Override
     public void autonomousInit() {
         autonomousCommand = robotContainer.getAutonomousCommand();
@@ -45,33 +33,12 @@ public class Robot extends TimedRobot {
         }
     }
 
-    @Override
-    public void autonomousPeriodic() {}
-
-    @Override
-    public void autonomousExit() {}
-
+    // teleopInit() is called when teleop begins. Here it just cancels whatever auto command was running. Again, this is
+    // useless for t-shirt bot.
     @Override
     public void teleopInit() {
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
         }
     }
-
-    @Override
-    public void teleopPeriodic() {}
-
-    @Override
-    public void teleopExit() {}
-
-    @Override
-    public void testInit() {
-        CommandScheduler.getInstance().cancelAll();
-    }
-
-    @Override
-    public void testPeriodic() {}
-
-    @Override
-    public void testExit() {}
 }
