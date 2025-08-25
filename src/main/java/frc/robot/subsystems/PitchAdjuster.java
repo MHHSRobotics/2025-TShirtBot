@@ -11,7 +11,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 public class PitchAdjuster extends SubsystemBase {
     public static class Constants {
         // Motor ID
-        private static final int id = 1;
+        private static final int id = 4;
 
         // Whether the motor is inverted
         private static final boolean inverted = false;
