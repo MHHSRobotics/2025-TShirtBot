@@ -1,121 +1,44 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
-import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import frc.robot.Commands.PitchAdjusterCommands;
-import frc.robot.Commands.PneumaticCommands;
-import frc.robot.Subsystems.PitchAdjuster;
-import frc.robot.Subsystems.Pneumatic;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-/**
- * This is a demo program showing the use of the DifferentialDrive class, specifically it contains
- * the code necessary to operate a robot with tank drive.
- * blah blah blah
- */
-
- 
+// Robot class initialized by Main. Extends TimedRobot to get access to methods which are called when state is changed.
 public class Robot extends TimedRobot {
-  private final DifferentialDrive robotDrive;
-  private final PS5Controller controller;
+    // Current autonomous command
+    private Command autonomousCommand;
 
-  private final Spark leftMotor1 = new Spark(0);
-  private final Spark leftMotor2 = new Spark(1);
-  private final Spark rightMotor1 = new Spark(2);
-  private final Spark rightMotor2 = new Spark(3);
+    private final RobotContainer robotContainer;
 
-  private final PitchAdjuster pitchAdjuster = new PitchAdjuster();
-  private final PitchAdjusterCommands pitchAdjusterCommands = new PitchAdjusterCommands(pitchAdjuster);
-  private final Pneumatic cat = new Pneumatic();
-  private final PneumaticCommands PneumaticCommands = new PneumaticCommands(cat);
+    public Robot() {
+        robotContainer = new RobotContainer();
+    }
 
-  /** Called once at the beginning of the robot program. */
-  public Robot() {
-    // We need to invert one side of the drivetrain so that positive voltages
-    // result in both sides moving forward. Depending on how your robot's
-    // gearbox is constructed, you might have to invert the left side instead.
-    rightMotor1.setInverted(true);
-    rightMotor2.setInverted(true);
+    // robotPeriodic() runs every robot tick. This code just runs the CommandScheduler, which manages all commands.
+    // CommandScheduler.run() gets the next command and runs it.
+    @Override
+    public void robotPeriodic() {
+        CommandScheduler.getInstance().run();
+    }
 
-    robotDrive = new DifferentialDrive((s)->{leftMotor1.set(s);leftMotor2.set(s);}, (s)->{rightMotor1.set(s);rightMotor2.set(s);});
-    controller = new PS5Controller(0);
+    // autonomousInit() is called when autonomous begins. This gets the auto command from RobotContainer and schedules
+    // it. There's no auto for t-shirt bot, but I decided to keep this since it's a good example.
+    @Override
+    public void autonomousInit() {
+        autonomousCommand = robotContainer.getAutonomousCommand();
 
-    SendableRegistry.addChild(robotDrive, leftMotor1);
-    SendableRegistry.addChild(robotDrive, leftMotor2);
-    SendableRegistry.addChild(robotDrive, rightMotor1);
-    SendableRegistry.addChild(robotDrive, rightMotor2);
-  }
+        if (autonomousCommand != null) {
+            autonomousCommand.schedule();
+        }
+    }
 
-  @Override
-  public void teleopPeriodic() {
-    robotDrive.arcadeDrive(-controller.getLeftY(), -controller.getLeftX());
-    if (controller.getCircleButton()) {
-      pitchAdjusterCommands.setPitch(PitchAdjuster.Constants.angle1);
-    if (controller.getCrossButton()) {
-      pitchAdjusterCommands.setPitch(PitchAdjuster.Constants.angle2);
-  }
-    if (controller.getCreateButton()) {
-      PneumaticCommands.True();
-  }
-    if (controller.getOptionsButton()) {
-      PneumaticCommands.False();
-  }
+    // teleopInit() is called when teleop begins. Here it just cancels whatever auto command was running. Again, this is
+    // useless for t-shirt bot.
+    @Override
+    public void teleopInit() {
+        if (autonomousCommand != null) {
+            autonomousCommand.cancel();
+        }
+    }
 }
-}
-}
-
-/*        .                                       . .        .                                        
-        .                               .          .                                                
-             .           .       .                .               .   %*.   .    .           @#@    
- . .        .         .                                .    .         #  ##                @*  @    
-                 . .    . .                             .    .        #=  .@@ @      .@@ @@-  ##    
-                                 .                  .                  .  .=@-.:@@@@@@..@@+.  .. .  
-       .    . .                .                                    .  .=    %%=@    @-%#    =:+    
-                    .        .   . .                                   ## :#.:.@ @* @ @.%*##  #*    
-.                                      . .      .                      @ .+  - @ @@@@ @ %.  @ *@    
-       .    .  .                              ..                      ..   %@@@@ =  % @@@@@ . @#    
-                    .                                        .        +..@  .@.%  =- +@.@   *@ @.   
-                                                    .                .@@@.@.=  @@  ..@@    .@@@@    
-                        . .                            ..     .           @ @  .#. .@=..:@%@@...    
-                                       .  .                    .   .  ..@@@#. #. @@@@ #@  @@@@@    .
-   . .                                .                    .         @@   . .     @.        .@@     
-               .                       .      .             .    . +@%+    =    @@@@@@ .  @.:       
-           .       .                            . .      @@@@@@@@@@@@ -#-@:-+@%.      =@@@@.@    .  
-                                              .    .@@@@@@@   @@.=@@@ @#  .@%@@@@@@@@@@@@@@@+@@     
-               .        .   .     .       .      .@@@=  @@  -@+ :@@ @  @= @ :@@@@@@*%#*%@@@*@+@.    
-                             .     .           @@@*@  @@@. @@+ .@.@=@  .@  +   .%@*-#-@%=.:@@+@+    
- .   .                                .      =@@+#@  %@@  @@- +@@#@@ +. @@@ -@@   ..  : .%@++@@     
-                         .               .  @@-@@@@  @@   @@  .@@.@@      @@@     ..:%#@@*+@@@.     
- .                .     .                  @@@  @@   @@  @@@ .@@ %#-        @@@@@@@@@@@@@@@@ +      
-                                 . .     -@@@  @@-  @@  @@@  .@#+@.@@#  .@@    .  .         @@      
-                                     .  @@@   @- .@@.   +@@  @@@@-   #@@%.@@#     .. %    .@@.      
-    .     ..                           %@ .=..@@:  @@   .@#  @@@  @@@@@     % .*.. -@ ==. :@@    .  
-                .                     -@@#     %@@   %. :@@=.@@@**@@%@@: @%::=*    %.   *@@@        
- .                  .                .@ @@@@.    @@@  %@@@#. @@@@@@   %@.. %  #.:# @ =+=@@@        .
-                             .  .    @@  .@@@@@    @@- .@  ..@%@@.  .    @@@   .   * %...@          
-                                    @@@     @@@@@@  .@@ @@  :@@@  @@@@@    % @@ : -#   *@- .        
-  .                      .     .   .@%@*@@     =@@@= %@  @+ .@:*@@@@@@@@@@-  @ . .   @@@@           
-       .             .              @.:@. @@      :@@ @# @@  @@@@ :     .@@@#. %=  -@@@@            
-                       .           .@@@ @@  #+.   . @@.  ..  .@ @@@@       @@. .   @#.:#            
-                 .                  @@%@%*@@@@* #:   @@@@-@ . -@@           +* . @@@%=@=   .        
-   @@@@@    ..                      @@@:@+    @@  :    #@+# :#   @@@@@@@@@@@%:.@@@@@@@@             
-    @@@@@@@                        .*@@* @@@@@@ @@:      ..   .@*@:@@@%@#  @@@@@@@.  *#  .   .   .  
-    @@@@@@@@@              .    .    @@*.@-.  .@@= @%:    .   . .           *@@..    -              
-.    #@@@@@@  :@@          .          @#@@ .@@     *:@@@%.    .  - .   -@    .@      @              
-       @@@   .@@@@@ .=            @@@@@@=@@@@@@@@@@*+   .     #..@@@@@@@@@    .    @@@              
-        .@@@@@@@@@  @@@@@@@@@@@@@@@#@@*+@..-%@@# @@@@@@.     .    #  @@@ -@   @@. . @%              
-        .  @@@@@@  @@@-  @@@.  @@ @=@@-:@%@@@@@@@@@-@+@*@@@@%@ -#@@-    %@      .: %@               
-              @@@@@@@@-  +@@   @@ @-@@=.@@@@@@@@@@@@@@@@@@@@@@@%%%@@ @@+:..-. = #   @               
-.               . @@@@@@@@@@@: @@+@@#@#@@@@@@@@@@+-  . .     +@@@@@@ @@%@@#@@ *...@@@..             
-       .  .           .%@@@@@@@@@@@@@@@@@@  @@@@@@@@@@@=.   % @@@@@@ +   @  @.@@=. .@ : +           
-                                     .        .     @@@@@@@@@@     @@@*%@@#@@@ @@@@:@@@@@       .   
-                      .      .                      .               .                 . .           
-                                     .      .                           .                            */
