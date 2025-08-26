@@ -3,7 +3,6 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 
 import frc.robot.commands.DriveCommands;
@@ -61,9 +60,10 @@ public class RobotContainer {
                 () -> -MathUtil.applyDeadband(controller.getLeftX(), 0.1)));
         pitchAdjuster.setDefaultCommand(
                 pitchAdjusterCommands.setSpeed(() -> MathUtil.applyDeadband(controller.getRightY(), 0.1) / 10));
-        turret.setDefaultCommand(
-                turretCommands.setSpeed(() -> MathUtil.applyDeadband(controller.getRightX(), 0.1) / 10));
-        controller.R2().whileTrue(shooterCommands.setSpeed(() -> 0.5).andThen(new WaitCommand(1)).andThen(pneumaticsCommands.enable()).andThen(new WaitCommand(0.5)).andThen(shooterCommands.stop()).andThen(pneumaticsCommands.disable()));
+        // turret.setDefaultCommand(
+        //        turretCommands.setSpeed(() -> MathUtil.applyDeadband(controller.getRightX(), 0.1) / 10));
+        controller.R2().onTrue(shooterCommands.setSpeed(() -> 1)).onFalse(shooterCommands.stop());
+        controller.L2().onTrue(pneumaticsCommands.enable()).onFalse(pneumaticsCommands.disable());
     }
 
     // Gets the next auto command. Since this is t-shirt bot it just returns a no-op.
