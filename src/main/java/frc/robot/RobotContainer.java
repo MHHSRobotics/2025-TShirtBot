@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
@@ -35,6 +36,8 @@ public class RobotContainer {
     private TurretCommands turretCommands;
     private PneumaticsCommands pneumaticsCommands;
 
+    public double speed = 0.55;
+
     public RobotContainer() {
         // Initialize the subsystems
         drive = new Drive();
@@ -52,6 +55,7 @@ public class RobotContainer {
 
         // Bind controls to commands
         configureBindings();
+        SmartDashboard.setDefaultNumber("Speed", 0.5);
     }
 
     public void configureBindings() {
@@ -62,7 +66,11 @@ public class RobotContainer {
                 pitchAdjusterCommands.setSpeed(() -> MathUtil.applyDeadband(controller.getRightY(), 0.1) / 10));
         // turret.setDefaultCommand(
         //        turretCommands.setSpeed(() -> MathUtil.applyDeadband(controller.getRightX(), 0.1) / 10));
-        controller.R2().onTrue(shooterCommands.setSpeed(() -> 1)).onFalse(shooterCommands.stop());
+        controller
+                .R2()
+                .onTrue(shooterCommands.setSpeed(() -> SmartDashboard.getNumber("Speed", 0.5)))
+                .onFalse(shooterCommands.stop());
+
         controller.L2().onTrue(pneumaticsCommands.enable()).onFalse(pneumaticsCommands.disable());
     }
 
