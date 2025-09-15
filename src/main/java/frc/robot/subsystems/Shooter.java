@@ -2,9 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
+import frc.robot.io.MotorIO;
 
 // The shooter subsystem uses a single TalonFX controlling a Falcon 500 motor, which powers a pair of flywheels. No PID
 // is required since flywheels don't need to have a precise velocity.
@@ -18,25 +16,17 @@ public class Shooter extends SubsystemBase {
     }
 
     // The motor controller
-    private final TalonFX motor;
+    private final MotorIO motor;
 
-    public Shooter() {
+    public Shooter(MotorIO motorIO) {
         // Initialize the TalonFX
-        motor = new TalonFX(Constants.motorId);
+        motor = motorIO;
 
-        // Create config for the TalonFX
-        TalonFXConfiguration config = new TalonFXConfiguration();
-
-        // Sets the inverted value for the config
-        config.MotorOutput.Inverted =
-                Constants.inverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
-
-        // Applies the config to the TalonFX
-        motor.getConfigurator().apply(config);
+        motor.setInverted(Constants.inverted);
     }
 
     // Sets the speed of the Falcon motor
     public void setSpeed(double speed) {
-        motor.set(speed);
+        motor.setDutyCycle(speed);
     }
 }

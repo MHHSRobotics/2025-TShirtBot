@@ -1,8 +1,9 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import frc.robot.io.MotorIO;
 
 // The drive subsystem uses a total of 4 PWM Spark motor controllers, 2 for each side of the differential drive. Each
 // pair of motors controls three wheels.
@@ -22,20 +23,20 @@ public class Drive extends SubsystemBase {
     }
 
     // The motors
-    private Spark leftMotor1;
-    private Spark leftMotor2;
-    private Spark rightMotor1;
-    private Spark rightMotor2;
+    private MotorIO leftMotor1;
+    private MotorIO leftMotor2;
+    private MotorIO rightMotor1;
+    private MotorIO rightMotor2;
 
     // DifferentialDrive class to control the motors based on controller input
     private DifferentialDrive drive;
 
-    public Drive() {
+    public Drive(MotorIO leftMotor1, MotorIO leftMotor2, MotorIO rightMotor1, MotorIO rightMotor2) {
         // Initialize the motors
-        leftMotor1 = new Spark(Constants.leftMotor1Id);
-        leftMotor2 = new Spark(Constants.leftMotor2Id);
-        rightMotor1 = new Spark(Constants.rightMotor1Id);
-        rightMotor2 = new Spark(Constants.rightMotor2Id);
+        this.leftMotor1 = leftMotor1;
+        this.leftMotor2 = leftMotor2;
+        this.rightMotor1 = rightMotor1;
+        this.rightMotor2 = rightMotor2;
 
         // Invert them if necessary
         leftMotor1.setInverted(Constants.leftMotor1Inverted);
@@ -47,12 +48,12 @@ public class Drive extends SubsystemBase {
         // for the right side. The DifferentialDrive class uses these to control the bot.
         drive = new DifferentialDrive(
                 (s) -> {
-                    leftMotor1.set(s);
-                    leftMotor2.set(s);
+                    leftMotor1.setDutyCycle(s);
+                    leftMotor2.setDutyCycle(s);
                 },
                 (s) -> {
-                    rightMotor1.set(s);
-                    rightMotor2.set(s);
+                    rightMotor1.setDutyCycle(s);
+                    rightMotor2.setDutyCycle(s);
                 });
     }
 

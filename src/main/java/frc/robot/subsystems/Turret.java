@@ -2,10 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
+import frc.robot.io.MotorIO;
 
 // The turret subsystem uses a single TalonFX controlling a Falcon 500 motor.
 public class Turret extends SubsystemBase {
@@ -18,25 +15,18 @@ public class Turret extends SubsystemBase {
     }
 
     // The motor controller
-    private TalonFX turretMotor;
+    private MotorIO motor;
 
-    public Turret() {
+    public Turret(MotorIO motorIO) {
         // Initialize the TalonFX
-        turretMotor = new TalonFX(Constants.motorId);
+        motor = motorIO;
 
-        // Creates the TalonFX config
-        TalonFXConfiguration config = new TalonFXConfiguration();
-
-        // Sets the inverted value for the config
-        config.MotorOutput.Inverted =
-                Constants.motorInverted ? InvertedValue.Clockwise_Positive : InvertedValue.CounterClockwise_Positive;
-        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        // Applies the config to the TalonFX
-        turretMotor.getConfigurator().apply(config);
+        motor.setInverted(Constants.motorInverted);
+        motor.setBraking(true);
     }
 
     // Sets the speed of the Falcon motor
     public void setSpeed(double speed) {
-        turretMotor.set(speed);
+        motor.setDutyCycle(speed);
     }
 }
