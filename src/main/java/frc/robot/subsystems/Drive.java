@@ -38,6 +38,16 @@ public class Drive extends SubsystemBase {
         this.rightMotor1 = rightMotor1;
         this.rightMotor2 = rightMotor2;
 
+        leftMotor1.setName("Left Motor 1");
+        leftMotor2.setName("Left Motor 2");
+        rightMotor1.setName("Right Motor 1");
+        rightMotor2.setName("Right Motor 2");
+
+        leftMotor1.setPath("Drive/LeftMotor1");
+        leftMotor2.setPath("Drive/LeftMotor2");
+        rightMotor1.setPath("Drive/RightMotor1");
+        rightMotor2.setPath("Drive/RightMotor2");
+
         // Invert them if necessary
         leftMotor1.setInverted(Constants.leftMotor1Inverted);
         leftMotor2.setInverted(Constants.leftMotor2Inverted);
@@ -61,5 +71,13 @@ public class Drive extends SubsystemBase {
     // and right sides.
     public void setSpeed(double speed, double rotation) {
         drive.arcadeDrive(speed, rotation);
+    }
+
+    @Override
+    public void periodic() {
+        leftMotor1.update();
+        leftMotor2.update();
+        rightMotor1.update();
+        rightMotor2.update();
     }
 }

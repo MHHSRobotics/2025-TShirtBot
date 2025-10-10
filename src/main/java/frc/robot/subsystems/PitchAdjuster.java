@@ -21,11 +21,19 @@ public class PitchAdjuster extends SubsystemBase {
         // Initialize the SparkMAX
         motor = motorIO;
 
+        motor.setName("Turret Motor");
+        motor.setPath("Turret/Motor");
+
         motor.setInverted(Constants.inverted);
     }
 
     // Sets the speed of the motor (1 is full forward, -1 is full reverse)
     public void setSpeed(double speed) {
         motor.setDutyCycle(speed);
+    }
+
+    @Override
+    public void periodic() {
+        motor.update();
     }
 }

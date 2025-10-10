@@ -22,11 +22,19 @@ public class Shooter extends SubsystemBase {
         // Initialize the TalonFX
         motor = motorIO;
 
+        motor.setName("Shooter Motor");
+        motor.setPath("Shooter/Motor");
+
         motor.setInverted(Constants.inverted);
     }
 
     // Sets the speed of the Falcon motor
     public void setSpeed(double speed) {
         motor.setDutyCycle(speed);
+    }
+
+    @Override
+    public void periodic() {
+        motor.update();
     }
 }

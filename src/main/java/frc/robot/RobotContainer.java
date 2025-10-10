@@ -12,6 +12,8 @@ import frc.robot.commands.PitchAdjusterCommands;
 import frc.robot.commands.PneumaticsCommands;
 import frc.robot.commands.ShooterCommands;
 import frc.robot.commands.TurretCommands;
+import frc.robot.io.EncoderIO;
+import frc.robot.io.EncoderIOCANcoder;
 import frc.robot.io.MotorIO;
 import frc.robot.io.MotorIOSpark;
 import frc.robot.io.MotorIOSparkMax;
@@ -57,6 +59,7 @@ public class RobotContainer {
     public void initSubsystems() {
         MotorIO shooterMotor;
         MotorIO turretMotor;
+        EncoderIO turretEncoder;
 
         MotorIO leftMotor1;
         MotorIO leftMotor2;
@@ -69,6 +72,7 @@ public class RobotContainer {
             case SIM:
                 shooterMotor = new MotorIOTalonFX(Shooter.Constants.motorId, Constants.defaultBus);
                 turretMotor = new MotorIOTalonFX(Turret.Constants.motorId, Constants.defaultBus);
+                turretEncoder = new EncoderIOCANcoder(Turret.Constants.encoderId, Constants.defaultBus);
                 leftMotor1 = new MotorIOSpark(Drive.Constants.leftMotor1Id);
                 leftMotor2 = new MotorIOSpark(Drive.Constants.leftMotor2Id);
                 rightMotor1 = new MotorIOSpark(Drive.Constants.rightMotor1Id);
@@ -78,6 +82,7 @@ public class RobotContainer {
             default:
                 shooterMotor = new MotorIO();
                 turretMotor = new MotorIO();
+                turretEncoder = new EncoderIO();
                 leftMotor1 = new MotorIO();
                 leftMotor2 = new MotorIO();
                 rightMotor1 = new MotorIO();
@@ -86,7 +91,7 @@ public class RobotContainer {
                 break;
         }
         shooter = new Shooter(shooterMotor);
-        turret = new Turret(turretMotor);
+        turret = new Turret(turretMotor, turretEncoder);
         drive = new Drive(leftMotor1, leftMotor2, rightMotor1, rightMotor2);
         pitchAdjuster = new PitchAdjuster(pitchMotor);
         pneumatics = new Pneumatics();
@@ -107,8 +112,8 @@ public class RobotContainer {
                 () -> -MathUtil.applyDeadband(controller.getLeftX(), 0.1)));
         pitchAdjuster.setDefaultCommand(
                 pitchAdjusterCommands.setSpeed(() -> MathUtil.applyDeadband(controller.getRightY(), 0.1) / 10));
-        // turret.setDefaultCommand(
-        //        turretCommands.setSpeed(() -> MathUtil.applyDeadband(controller.getRightX(), 0.1) / 10));
+        turret.setDefaultCommand(
+                turretCommands.setSpeed(() -> MathUtil.applyDeadband(controller.getRightX(), 0.1) / 10));
         controller
                 .R2()
                 .onTrue(shooterCommands.setSpeed(() -> SmartDashboard.getNumber("Speed", 0.5)))
